@@ -1,0 +1,87 @@
+<link href="https://fonts.googleapis.com/css?family=Noto%20Sans" rel="stylesheet">
+<section style='font-family: Nato Sans, Arial; padding: 50px;'>
+	<div>
+		<div style='margin-left: auto; margin-right: auto; margin-bottom: 50px; width: 170px; height: 29px'>
+			<img  style='width: 170px; height: 29px' src='https://forthgreen.s3.us-east-2.amazonaws.com/assets/logo.png'></img>
+		</div>
+		<div style='margin-left: auto; margin-right: auto; margin-bottom: 5px; font-size: 23px; color: #1e2526; text-align: center'>
+			Invoice
+		</div>
+		<div style='margin-left: auto; margin-right: auto; font-size: 24px; color: #1e2526; text-align: center'>
+			<b>#{{transactionId}}</b>
+		</div>
+		<div style='margin-left: auto; margin-right: auto; font-size: 14px; color: #1e2526; text-align: center; margin-top: 50px'>
+			We received payment for your Forthgreen subscription. Thank you!
+		</div>
+		<div style='width: 40vw; margin-left: auto; margin-right: auto; margin-top: 50px;'>
+			<div style='margin-left: auto; margin-right: auto; margin-bottom: 35px; font-size: 18px; color: #1e2526; text-align: left'>
+				<b>User details</b>
+			</div>
+			<div style='display: flex; font-size: 14px; margin-bottom: 30px; padding-bottom: 14px; border-bottom: solid 1px #f0f0f0;'>
+				<div class='user-detail-element-heading'>
+					Date
+				</div>
+				<div style='margin-left: auto;'>
+					{{date}}
+				</div>
+			</div>
+			<div style='display: flex; font-size: 14px; margin-bottom: 30px; padding-bottom: 14px; border-bottom: solid 1px #f0f0f0;'>
+				<div class='user-detail-element-heading'>
+					Subscription to Starter
+				</div>
+				<div style='margin-left: auto;'>
+					{{to}}
+				</div>
+			</div>
+			<div style='display: flex; font-size: 14px; margin-bottom: 30px; padding-bottom: 14px; border-bottom: solid 1px #f0f0f0;'>
+				<div class='user-detail-element-heading'>
+					Charged to
+				</div>
+				<div style='margin-left: auto;'>
+					{{cardType}}(**** **** **** {{cardLast4}})
+				</div>
+			</div>
+			<div style='display: flex; font-size: 14px; margin-bottom: 30px; padding-bottom: 14px; border-bottom: solid 1px #f0f0f0;'>
+				<div class='user-detail-element-heading'>
+					For service through
+				</div>
+				<div style='margin-left: auto;'>
+					{{date}}
+				</div>
+			</div>
+			<div style='display: flex; font-size: 14px; margin-bottom: 30px; padding-bottom: 14px; border-bottom: solid 1px #f0f0f0;'>
+				<div class='user-detail-element-heading'>
+					Subtotal
+				</div>
+				<div style='margin-left: auto;'>
+					£{{amount}}
+				</div>
+			</div>
+			<div style='display: flex; font-size: 14px; margin-bottom: 30px; padding-bottom: 14px; border-bottom: solid 1px #f0f0f0;'>
+				<div class='user-detail-element-heading'>
+					Total
+				</div>
+				<div style='margin-left: auto;'>
+					£{{amount}}
+				</div>
+				</div>
+			<div style='display: flex; font-size: 14px; margin-bottom: 30px; padding-bottom: 14px; border-bottom: solid 1px #f0f0f0;'>
+				<div class='user-detail-element-heading'>
+					<b>Paid</b>
+				</div>
+				<div style='margin-left: auto;'>
+					<b>£{{amount}}</b>
+				</div>
+			</div>
+			<div style='font-size: 18px; color: #1e2526; text-align: left; margin-top: 60px'>
+				<b>Thank you!</b>
+			</div>
+			<div style='font-size: 14px; color: #1e2526; text-align: left; margin-top: 5px'>
+				Forthgreen Ltd<br/>
+				18 Creighton Road, Flat 1, London,<br/>
+				England, NW6 6ED.<br/>
+				info@forthgreen.com<br/>
+			</div>
+		</div>
+	</div>
+</section>
