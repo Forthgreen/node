@@ -13,6 +13,7 @@ const prefix = '/api/user/';
  * @since May 1, 2020
  */
 export default (app) => {
+
 	app.post(`${prefix}signup`, UserControllers.signup);
 	app.get(`${prefix}verify`, UserControllers.verify);
 	app.post(`${prefix}login`, UserControllers.login);
