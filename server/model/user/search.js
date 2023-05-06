@@ -97,6 +97,40 @@ export default ({
 				},
 
 			},
+
+			{
+				$lookup: {
+					from: 'blockusers',
+					let: {
+						localField: '$_id',
+					},
+					pipeline: [
+						{
+							$match: {
+								$expr: {
+									$and: [
+										{
+											$eq: ['$blockingRef', '$$localField'],
+										},
+										{
+											$eq: ['$userRef', Types.ObjectId(id)],
+										},
+									],
+								},
+							},
+						},
+					],
+					as: 'blockers',
+				},
+			},
+			{
+				$unwind: {
+					path: '$blockers',
+					preserveNullAndEmptyArrays: true,
+				},
+
+			},
+
 			{
 				$skip: (page - 1) * limit,
 			},
@@ -116,6 +150,9 @@ export default ({
 					isFollow: {
 						$cond: ['$followers', true, false],
 					},
+					isBlock: {
+						$cond: ['$blockers', true, false],
+					},
 				},
 			},
 		]);
@@ -128,4 +165,3 @@ export default ({
 		return reject(ResponseUtility.GENERIC_ERR({ message: err.message, error: err }));
 	}
 });
-

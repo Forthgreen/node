@@ -3,6 +3,7 @@ import { ResponseUtility } from 'appknit-backend-bundle';
 import { Types } from 'mongoose';
 import {
 	UserModel,
+	BlockUserModel,
 } from '../../schemas';
 
 import {
@@ -43,6 +44,12 @@ export default ({
 				return reject(ResponseUtility.GENERIC_ERR({ message: 'Invalid userRef' }));
 			}
 		}
+
+		const userBlocking = await BlockUserModel.find({
+			userRef: userRef,
+			blockingRef: id,
+		});
+
 
 		const [userDetails] = await UserModel.aggregate([
 			{
@@ -175,6 +182,48 @@ export default ({
 					as: 'followings',
 				},
 			},
+
+
+			{
+				$lookup: {
+					from: 'blockusers',
+					let: { userRef: '$_id' },
+					pipeline: [
+						{
+							$match: {
+								$expr: {
+									$and: [
+										{ $eq: ['$blockingRef', '$$userRef'] },
+									],
+								},
+							},
+						},
+					],
+					as: 'blockers',
+				},
+			},
+			{
+				$lookup: {
+					from: 'blockusers',
+					let: { userRef: '$_id' },
+					pipeline: [
+						{
+							$match: {
+								$expr: {
+									$and: [
+										{ $eq: ['$userRef', '$$userRef'] },
+									],
+								},
+							},
+						},
+					],
+					as: 'blockings',
+				},
+			},
+			
+
+			
+
 			{
 				$project: {
 					_id: '$_id',
@@ -188,6 +237,8 @@ export default ({
 					gender: '$gender',
 					dateOfBirth: '$dateOfBirth',
 					isFollow: { $in: [Types.ObjectId(id), '$followers.userRef'] },
+					isBlock: { $in: [Types.ObjectId(id), '$blockers.userRef'] },
+					isSenderBlock: userBlocking,
 					dummyUser: { $ifNull: ['$dummyUser', false] },
 					posts: '$posts',
 					followings: { $size: '$followings' },

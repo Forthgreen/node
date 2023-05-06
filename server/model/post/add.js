@@ -7,6 +7,7 @@ import {
 	RandomCodeUtility,
 } from 'appknit-backend-bundle';
 import {
+	FollowUserModel,
 	PostModel,
 	UserModel,
 	NotificationModel,
@@ -161,6 +162,66 @@ export default ({
 			}
 		}
 
+// Notification to following user
+
+
+		const payload = {
+			user: {
+				_id: userInfo._id,
+				username: userInfo.username,
+				firstName: userInfo.firstName || 'User',
+				lastName: userInfo.lastName || '',
+				image: userInfo.image || '', 
+			},
+		};
+
+		let notificationRefType;
+		let notificationMessage;
+		let notifyTo;
+		const deviceTokens = [];
+		let device;
+		let etetette;
+		notificationRefType = NOTIFICATION_REF_TYPE.POST_ADD;
+		notificationMessage = 'created a post.';
+		const followUsers = await FollowUserModel.find({
+			userRef: id,
+		});
+		console.log(followUsers)
+		if (followUsers) {
+			for (const followUser of followUsers) {
+				const checkUser = await UserModel.findOne({
+					_id: followUser.followingRef,
+				});
+				if (checkUser) {
+					const notificationFollowId = new NotificationModel({
+						notifyTo: followUser.followingRef,
+						userRef: followUser.userRef,
+						ref: postObject._id,
+						refType: notificationRefType,
+						message: notificationMessage,
+						createdOn: dateNow,
+						updatedOn: dateNow,
+					});
+					notificationFollowId.save();
+
+					payload.refType = notificationRefType;
+					payload.notificationId = notificationFollowId._id;
+					if (checkUser && checkUser.device && checkUser.fcmToken) {
+						// console.log('hhhhhhhhhhhhhhhhhhh')
+						FirebaseNotificationService({
+							deviceTokens: [checkUser.fcmToken],
+							device: checkUser.device,
+							body: `${userInfo.firstName} created a post.`,
+							title: 'Forthgreen',
+							reference: notificationFollowId._id,
+							type: notificationRefType,
+							payload,
+						});
+					}
+				}
+			}
+		}
+// end notification
 		return resolve(ResponseUtility.SUCCESS({ data: postObject._doc, message: 'Post added successfully.' }));
 	} catch (err) {
 		return reject(ResponseUtility.GENERIC_ERR({ message: err.message, error: err }));

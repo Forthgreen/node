@@ -7,6 +7,7 @@ import {
 	PostModel,
 	UserModel,
 	FollowUserModel,
+	BlockUserModel,
 } from '../../schemas';
 import {
 	LIKES_TYPE,
@@ -48,10 +49,33 @@ export default ({
 			followingRef: 1,
 		}) || []).map(arr => arr.followingRef);
 
+
+		
+		const userBlocking = (await BlockUserModel.find({
+			userRef: id,
+		}, {
+			_id: 0,
+			blockingRef: 1,
+		}) || []).map(arr => arr.blockingRef);
+
+		const Blockinguser = (await BlockUserModel.find({
+			blockingRef: id,
+		}, {
+			_id: 0,
+			userRef: 1,
+		}) || []).map(arr => arr.userRef);
+
+
 		const list = await PostModel.aggregate([
 			{
 				$match: {
 					status: true,
+					userRef : { $nin : userBlocking},
+				},
+			},
+			{
+				$match: {
+					userRef : { $nin : Blockinguser},
 				},
 			},
 			{

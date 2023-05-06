@@ -7,6 +7,7 @@ import {
 	PostModel,
 	UserModel,
 	FollowUserModel,
+	BlockUserModel,
 } from '../../schemas';
 import {
 	LIKES_TYPE,
@@ -48,15 +49,36 @@ export default ({
 			followingRef: 1,
 		}) || []).map(arr => arr.followingRef);
 
-		console.log(userFollowing)
+		const userBlocking = (await BlockUserModel.find({
+			userRef: id,
+		}, {
+			_id: 0,
+			blockingRef: 1,
+		}) || []).map(arr => arr.blockingRef);
+
+		const Blockinguser = (await BlockUserModel.find({
+			blockingRef: id,
+		}, {
+			_id: 0,
+			userRef: 1,
+		}) || []).map(arr => arr.userRef);
+
 
 		const list = await PostModel.aggregate([
 			{
 				$match: {
 					status: true,
+					userRef : { $in : userFollowing},
 				},
+			},
+			{
 				$match: {
-					userRef : { $in : userFollowing }
+					userRef : { $nin : userBlocking},
+				},
+			},
+			{
+				$match: {
+					userRef : { $nin : Blockinguser},
 				},
 			},
 			{
@@ -135,6 +157,7 @@ export default ({
 										{ $eq: ['$status', true] },
 										{ $eq: ['$type', LIKES_TYPE.POST] },
 										{ $ne: ['$userRef', '$$postUserRef'] },
+										
 
 									],
 								},
@@ -153,6 +176,7 @@ export default ({
 													{ $eq: ['$status', true] },
 													{ $ne: ['$userRef', '$$userId'] },
 													{ $ne: ['$userRef', ObjectID(id)] },
+													{ $ne: ['$userRef', userBlocking] },
 												],
 											},
 										},
@@ -236,6 +260,7 @@ export default ({
 													{ $eq: ['$_id', '$$postRef'] },
 													{ $eq: ['$status', true] },
 													{ $ne: ['$userRef', ObjectID(id)] },
+													{ $ne: ['$userRef', userBlocking] },
 												],
 											},
 										},
@@ -277,6 +302,7 @@ export default ({
 										{ $eq: ['$_id', '$$postRef'] },
 										{ $in: ['$userRef', [...userFollowing, ObjectID(id)]] },
 										{ $eq: ['$status', true] },
+										{ $ne: ['$userRef', userBlocking] },
 									],
 								},
 							},
