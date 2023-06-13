@@ -17,6 +17,9 @@ import { secretString } from './constants';
 import ActivateRoutes from './routes';
 import queuesActivator from './queues';
 
+var cron = require('node-cron');
+const axios = require('axios');
+
 const app = express();
 
 // enable cors support
@@ -26,6 +29,19 @@ app.use(cors({
 	allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-HTTP-Method-Override', 'Accept'],
 	credentials: true,
 }));
+
+
+
+async function makeProductCacheAPICall() {
+	try {
+	  const response = await axios.get(process.env.HOST + 'product/productcache');
+	} catch (error) {
+	  console.error(error);
+	}
+  }
+
+
+
 
 (async () => {
 	try {
@@ -51,6 +67,13 @@ app.use(cors({
 		});
 		// call this to activate routes or define inside the route directory
 		ActivateRoutes(app);
+
+		cron.schedule('0 0 * * *', () => {
+			console.log('running a task every 24 hours');
+			makeProductCacheAPICall();
+		  });
+
+
 
 		const env = process.env.NODE_ENV ? process.env.NODE_ENV : 'development';
 		app.get('/', (req, res) => res.send(`<h1>Forthgreen ${env} environment</h1>`));

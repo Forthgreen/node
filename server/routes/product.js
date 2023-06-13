@@ -23,6 +23,8 @@ export default (app) => {
 	app.post(`${prefix}listAll`, ProductControllers.listAll);
 	app.post(`${prefix}listAllForUser`, AuthenticationControllers.authenticateUser, ProductControllers.listAll);
 	app.post(`${prefix}home`, AuthenticationControllers.authenticateUser, ProductControllers.home);
+	app.post(`${prefix}shopfeed`, ProductControllers.shopfeed);
+	app.get(`${prefix}productcache`, ProductControllers.productcache);
 	app.post(`${prefix}homeForAll`, ProductControllers.home);
 	app.post(`${prefix}status`, AuthenticationControllers.authenticateBrandOwner,ProductControllers.status);
 	app.post(`${prefix}addToTop`, AuthenticationControllers.authenticateBrandOwner,ProductControllers.addToTop);
